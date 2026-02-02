@@ -13,7 +13,8 @@ class Student(models.Model):
     date_of_birth = models.DateField()
     gender = models.CharField(max_length=1, choices=GENDER_CHOICES)
 
-    email = models.EmailField(unique=True)
+    email = models.EmailField()
+    # email = models.EmailField(unique=True)
     parent_phone = models.CharField(max_length=10)
     
     admission_date = models.DateField(auto_now_add=True)
