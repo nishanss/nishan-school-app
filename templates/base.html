@@ -1,0 +1,45 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+    <title>{% block title %}School Management{% endblock %}</title>
+    <link href="{% static 'vendor/tabler/css/tabler.min.css' %}" rel="stylesheet"/>
+    <style>
+      @import url('https://rsms.me/inter/inter.css');
+      :root { --tblr-font-sans-serif: 'Inter var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; }
+      body { font-feature-settings: "cv03", "cv04", "cv11"; }
+    </style>
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    <div class="page">
+      <header class="navbar navbar-expand-md d-print-none">
+        <div class="container-xl">
+          <h1 class="navbar-brand d-none-navbar-horizontal pe-0 pe-md-3">
+            <a href="/">MySchool System</a>
+          </h1>
+        </div>
+      </header>
+
+      <div class="page-wrapper">
+        <div class="page-header d-print-none">
+          <div class="container-xl">
+            {% block page_title %}{% endblock %}
+          </div>
+        </div>
+
+        <div class="page-body">
+          <div class="container-xl">
+            {% block content %}
+            {% endblock %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'vendor/tabler/js/tabler.min.js' %}" defer></script>
+    {% block extra_js %}{% endblock %}
+  </body>
+</html>
