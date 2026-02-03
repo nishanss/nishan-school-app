@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from .models import Student
 from .forms import StudentForm
+from django.contrib import messages
 
 def student_list(request):
     students = Student.objects.all()
@@ -11,6 +12,7 @@ def student_create(request):
         form = StudentForm(request.POST, request.FILES) 
         if form.is_valid():
             form.save()
+            messages.success(request, "Student profile created successfully!")
             return redirect('student_list') 
     else:
         form = StudentForm()
