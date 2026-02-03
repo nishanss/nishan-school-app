@@ -2,7 +2,7 @@
 
 {% block content %}
 <div class="card">
-  <div class="card-header"><h3 class="card-title">Add New Student</h3></div>
+  <div class="card-header"><h3 class="card-title">{% if edit_mode %}Edit Student{% else %}Add New Student{% endif %}</h3></div>
   <div class="card-body">
     <form method="post" enctype="multipart/form-data">
       {% csrf_token %}
@@ -18,18 +18,19 @@
         {% endfor %}
       </div>
       <div class="card-footer text-end">
+        <a href="{% url 'student_list' %}" class="btn btn-ghost-secondary d-none d-sm-inline-block float-start">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H6M12 5l-7 7 7 7"/></svg>
+          Back to Student List
+        </a>
         <button type="submit" class="btn btn-primary">Save Student</button>
       </div>
     </form>
 
-    <div class="col-auto ms-auto">
+    <!-- <div class="col-auto ms-auto">
       <div class="btn-list">
-        <a href="{% url 'student_list' %}" class="btn btn-primary d-none d-sm-inline-block">
-          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H6M12 5l-7 7 7 7"/></svg>
-          Back to Student List
-        </a>
+        
       </div>
-    </div>
+    </div> -->
 
   </div>
 </div>

@@ -18,12 +18,16 @@ from django.contrib import admin
 from django.conf import settings
 from django.conf.urls.static import static
 from django.urls import path, include
-from students.views import student_list, student_create
+from students.views import student_detail, student_list, student_create, student_update, student_delete
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', student_list, name='student_list'),
     path('students/add/', student_create, name='student_create'),
+    path('students/<int:pk>/', student_detail, name='student_detail'),
+    path('students/<int:pk>/edit/', student_update, name='student_update'),
+    path('students/<int:pk>/delete/', student_delete, name='student_delete'),
+
 ]
 
 if settings.DEBUG:

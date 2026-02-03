@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Student
 from .forms import StudentForm
 from django.contrib import messages
@@ -18,3 +18,28 @@ def student_create(request):
         form = StudentForm()
     
     return render(request, 'students/student_form.html', {'form': form})
+
+def student_detail(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+    return render(request, 'students/student_detail.html', {'student': student})
+
+def student_update(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+    if request.method == "POST":
+        form = StudentForm(request.POST, request.FILES, instance=student)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Student records - updated.")
+            return redirect('student_detail', pk=pk)
+    else:
+        form = StudentForm(instance=student)
+    return render(request, 'students/student_form.html', {'form': form, 'student': student, 'edit_mode': True})
+
+def student_delete(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+    if request.method == "POST":
+        student.delete()
+        messages.warning(request, f"Student {student.first_name} has been removed.")
+        return redirect('student_list')
+    
+    return render(request, 'students/student_confirm_delete.html', {'student': student})
