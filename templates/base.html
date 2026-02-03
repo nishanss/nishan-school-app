@@ -21,7 +21,9 @@
     </script>
 
     <div class="page">
-      <header class="navbar navbar-expand-md d-print-none">
+      {% if user.is_authenticated %}
+      <!-- <header class="navbar navbar-expand-md d-print-none"> -->
+      <header class="navbar navbar-expand-md d-print-none sticky-top">
         <div class="container-xl">
 
           <h1 class="navbar-brand d-none-navbar-horizontal pe-0 pe-md-3">
@@ -40,16 +42,19 @@
 
           <div class="nav-item dropdown">
             <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
-              <span class="avatar avatar-sm bg-blue-lt">AD</span>
+              <span class="avatar avatar-sm bg-blue-lt">{{ user.username|slice:":3"|upper }}</span>
               <div class="d-none d-xl-block ps-2">
-                <div>Admin User</div>
-                <div class="mt-1 small text-muted">School Principal</div>
+                <div>{{ user.get_full_name|default:user.username }}</div>
+                <div class="mt-1 small text-muted">{% if user.is_superuser %}Administrator{% else %}Staff{% endif %}</div>
               </div>
             </a>
             <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-              <a href="/admin" class="dropdown-item">Settings</a>
+              <a href="/admin" class="dropdown-item">Admin Panel</a>
               <div class="dropdown-divider"></div>
-              <a href="#" class="dropdown-item">Logout</a>
+              <form action="{% url 'logout' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="dropdown-item">Logout</button>
+              </form>
             </div>
           </div>
         </div>
@@ -58,6 +63,7 @@
         
 
       </header>
+      {% endif %}
 
       <div class="page-wrapper">
         <div class="page-header d-print-none">

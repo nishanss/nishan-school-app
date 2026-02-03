@@ -2,16 +2,35 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .models import Student
 from .forms import StudentForm
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+# from django.db import models
+from django.db.models import Q
 
+@login_required
 def student_list(request):
-    students = Student.objects.all()
-    return render(request, 'students/student_list.html', {'students': students})
 
+    query = request.GET.get('q', '').strip()
+    if query:
+        students = Student.objects.filter(
+            Q(first_name__icontains=query) | 
+            Q(last_name__icontains=query) |
+            Q(roll_number__icontains=query)
+        )
+    else:
+        students = Student.objects.all()
+
+    return render(request, 'students/student_list.html', {'students': students,'query': query})
+
+@login_required
 def student_create(request):
     if request.method == "POST":
         form = StudentForm(request.POST, request.FILES) 
         if form.is_valid():
-            form.save()
+            # form.save()
+            student = form.save(commit=False)
+            student.created_by = request.user
+            student.save()
+
             messages.success(request, "Student profile created successfully!")
             return redirect('student_list') 
     else:
@@ -19,10 +38,12 @@ def student_create(request):
     
     return render(request, 'students/student_form.html', {'form': form})
 
+@login_required
 def student_detail(request, pk):
     student = get_object_or_404(Student, pk=pk)
     return render(request, 'students/student_detail.html', {'student': student})
 
+@login_required
 def student_update(request, pk):
     student = get_object_or_404(Student, pk=pk)
     if request.method == "POST":
@@ -35,6 +56,7 @@ def student_update(request, pk):
         form = StudentForm(instance=student)
     return render(request, 'students/student_form.html', {'form': form, 'student': student, 'edit_mode': True})
 
+@login_required
 def student_delete(request, pk):
     student = get_object_or_404(Student, pk=pk)
     if request.method == "POST":

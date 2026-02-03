@@ -64,6 +64,14 @@
                 <div class="datagrid-title">Parent Phone</div>
                 <div class="datagrid-content">{{ student.parent_phone }}</div>
               </div>
+              <div class="datagrid-item">
+                <div class="datagrid-title">Added On</div>
+                <div class="datagrid-content">{{ student.created_at|date:"M d, Y H:i" }}</div>
+              </div>
+              <div class="datagrid-item">
+                <div class="datagrid-title">Added By</div>
+                <div class="datagrid-content">{{ student.created_by.username|default:"System" }}</div>
+              </div>
             </div>
           </div>
         </div>

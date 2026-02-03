@@ -3,9 +3,30 @@
 {% block page_title %}
 <div class="row align-items-center">
   <div class="col">
-    <h2 class="page-title">Student Directory</h2>
+    <h2 class="page-title">Students</h2>
+    <div class="text-muted small mt-1">{{ students.count }} total students found</div>
   </div>
-  <div class="col-auto ms-auto">
+
+  <div class="col-auto ms-auto d-print-none">
+    <div class="d-flex">
+      <form action="{% url 'student_list' %}" method="get" class="me-3">
+        <div class="input-icon">
+          <span class="input-icon-addon">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="10" cy="10" r="7" /><line x1="21" y1="21" x2="15" y2="15" /></svg>
+          </span>
+          <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search name or roll no." autocomplete="off" aria-label="Search in students">
+        </div>
+        <button type="submit" class="d-none"></button>
+      </form>
+      <a href="{% url 'student_create' %}" class="btn btn-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+        Add Student
+      </a>
+    </div>
+  </div>
+</div>
+
+  <!-- <div class="col-auto ms-auto">
     <div class="btn-list">
       <a href="{% url 'student_create' %}" class="btn btn-primary d-none d-sm-inline-block">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
@@ -13,7 +34,7 @@
       </a>
     </div>
   </div>
-</div>
+</div> -->
 {% endblock %}
 
 {% block content %}
@@ -94,25 +115,42 @@
           <td class="text-secondary">{{ student.roll_number }}</td>
           <td>
             {% if student.is_active %}
-              <span class="badge bg-success">Active</span>
+              <span class="badge bg-success text-bg-primary">Active</span>
             {% else %}
-              <span class="badge bg-danger">Inactive</span>
+              <span class="badge bg-danger text-bg-warning">Inactive</span>
             {% endif %}
           </td>
       
           <td class="text-end">
             <div class="d-flex justify-content-end gap-2">
-              <a href="{% url 'student_update' student.pk %}" class="btn btn-outline-primary btn-sm">
+              <a href="{% url 'student_update' student.pk %}" class="btn btn-outline-primary btn-sm text-bg-primary">
                 Edit
               </a>
-              <a href="{% url 'student_delete' student.pk %}" class="btn btn-outline-danger btn-sm">
+              <a href="{% url 'student_delete' student.pk %}" class="btn btn-outline-danger btn-sm text-bg-warning">
                 Delete
               </a>
             </div>
           </td>
         </tr>
         {% empty %}
-        ...
+        <tr>
+          <td colspan="4" class="text-center py-4">
+            <div class="empty">
+              <div class="empty-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-lg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="12" r="9" /><line x1="9" y1="10" x2="9.01" y2="10" /><line x1="15" y1="10" x2="15.01" y2="10" /><path d="M9.5 15.25a3.5 3.5 0 0 1 5 0" /></svg>
+              </div>
+              <p class="empty-title">No results found</p>
+              <p class="empty-subtitle text-muted">
+                Try adjusting your search for "{{ query }}" to find what you're looking for.
+              </p>
+              <div class="empty-action">
+                <a href="{% url 'student_list' %}" class="btn btn-primary">
+                  Clear Search
+                </a>
+              </div>
+            </div>
+          </td>
+        </tr>
         {% endfor %}
       </tbody>
 

@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User 
 
 class Student(models.Model):
     GENDER_CHOICES = [
@@ -18,6 +19,8 @@ class Student(models.Model):
     parent_phone = models.CharField(max_length=10)
     
     admission_date = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     is_active = models.BooleanField(default=True)
     photo = models.ImageField(upload_to='students/', null=True, blank=True)
 
