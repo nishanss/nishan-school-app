@@ -5,21 +5,37 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 # from django.db import models
 from django.db.models import Q
+from academics.models import Section
 
 @login_required
 def student_list(request):
 
     query = request.GET.get('q', '').strip()
+    section_id = request.GET.get('section', '')
+    students = Student.objects.all()
+
     if query:
         students = Student.objects.filter(
             Q(first_name__icontains=query) | 
             Q(last_name__icontains=query) |
             Q(roll_number__icontains=query)
         )
-    else:
-        students = Student.objects.all()
+    # else:
+    #     students = Student.objects.all()
 
-    return render(request, 'students/student_list.html', {'students': students,'query': query})
+    # return render(request, 'students/student_list.html', {'students': students,'query': query})
+
+    if section_id:
+        students = students.filter(section_id=section_id)
+
+    sections = Section.objects.all()
+    return render(request, 'students/student_list.html', {
+        'students': students, 
+        'sections': sections,
+        'current_section': section_id,
+        'query': query,
+    })
+
 
 @login_required
 def student_create(request):

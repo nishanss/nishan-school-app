@@ -9,21 +9,36 @@
 
   <div class="col-auto ms-auto d-print-none">
     <div class="d-flex">
-      <form action="{% url 'student_list' %}" method="get" class="me-3">
+      <form action="{% url 'student_list' %}" method="get" class="d-flex gap-2 me-3">
+        
+        <div class="input-icon">
+          <select name="section" class="form-select" onchange="this.form.submit()" aria-label="Filter by Section">
+            <option value="">All Sections</option>
+            {% for section in sections %}
+              <option value="{{ section.id }}" {% if current_section == section.id|stringformat:"i" %}selected{% endif %}>
+                {{ section }}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+
         <div class="input-icon">
           <span class="input-icon-addon">
             <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="10" cy="10" r="7" /><line x1="21" y1="21" x2="15" y2="15" /></svg>
           </span>
-          <input type="text" name="q" value="{{ query }}" class="form-control" placeholder="Search name or roll no." autocomplete="off" aria-label="Search in students">
+          <input type="text" name="q" value="{{ query|default:'' }}" class="form-control" placeholder="Search name or roll no..." autocomplete="off">
         </div>
+
         <button type="submit" class="d-none"></button>
       </form>
+
       <a href="{% url 'student_create' %}" class="btn btn-primary">
         <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
         Add Student
       </a>
     </div>
   </div>
+
 </div>
 
   <!-- <div class="col-auto ms-auto">

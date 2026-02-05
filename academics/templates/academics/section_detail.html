@@ -5,6 +5,12 @@
   <div class="page-header d-print-none">
     <div class="row align-items-center">
       <div class="col">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="{% url 'academic_dashboard' %}">Academics</a></li>
+              <li class="breadcrumb-item active" aria-current="page">{{ section.grade.name }} - {{ section.name }}</li>
+            </ol>
+          </nav>
         <h2 class="page-title">
           {{ section.grade.name }} - Section {{ section.name }}
         </h2>
