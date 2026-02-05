@@ -30,6 +30,7 @@ urlpatterns = [
     path('students/<int:pk>/', student_detail, name='student_detail'),
     path('students/<int:pk>/edit/', student_update, name='student_update'),
     path('students/<int:pk>/delete/', student_delete, name='student_delete'),
+    path('academics/', include('academics.urls')),
 
 ]
 

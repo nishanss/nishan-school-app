@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-xl">
+  <div class="page-header d-print-none">
+    <div class="row align-items-center">
+      <div class="col">
+        <h2 class="page-title">Academic Structure</h2>
+      </div>
+    </div>
+  </div>
+  
+  <div class="row row-cards">
+    {% for grade in grades %}
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h3 class="card-title">{{ grade.name }}</h3>
+        </div>
+        <div class="list-group list-group-flush">
+          {% for section in grade.sections.all %}
+          <a href="{% url 'section_detail' section.pk %}" class="list-group-item list-group-item-action d-flex justify-content-between">
+            Section {{ section.name }}
+            <span class="badge bg-primary-lt">{{ section.students.count }} / {{ section.capacity }}</span>
+          </a>
+          {% empty %}
+          <div class="list-group-item text-muted">No sections added yet.</div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}
