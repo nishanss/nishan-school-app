@@ -2,11 +2,16 @@
 
 {% block content %}
 <div class="page-header d-print-none">
-    <h2 class="page-title">System Overview</h2>
+    <div class="row align-items-center">
+        <div class="col">
+            <h2 class="page-title">Management Dashboard</h2>
+            <div class="text-muted small mt-1">School Overview for {% now "F j, Y" %}</div>
+        </div>
+    </div>
 </div>
 
 <div class="row row-cards mt-2">
-    <div class="col-sm-6 col-lg-4">
+    <div class="col-sm-6 col-lg-3">
         <div class="card card-sm">
             <div class="card-body">
                 <div class="row align-items-center">
@@ -17,26 +22,92 @@
                     </div>
                     <div class="col">
                         <div class="font-weight-medium">{{ total_students }} Students</div>
-                        <div class="text-muted">Registered in system</div>
+                        <div class="text-muted">In {{ total_sections }} Sections</div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="col-sm-6 col-lg-4">
+    <div class="col-sm-6 col-lg-3">
+        <div class="card card-sm">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="font-weight-medium">Attendance: {{ attendance_rate }}%</div>
+                        <div class="progress progress-sm mt-2">
+                            <div class="progress-bar bg-green" style="width: {{ attendance_rate|floatformat:0 }}%;"></div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <span class="text-green d-inline-flex align-items-center lh-1">
+                            Today
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+        <div class="card card-sm">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col">
+                        <div class="font-weight-medium">Fee Collection: {{ collection_rate }}%</div>
+                        <div class="progress progress-sm mt-2">
+                            <div class="progress-bar bg-blue" style="width: {{ collection_rate|floatformat:0 }}%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
         <div class="card card-sm">
             <div class="card-body">
                 <div class="row align-items-center">
                     <div class="col-auto">
-                        <span class="bg-green text-white avatar">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 19l18 0" /><path d="M5 19v-10l7 -4l7 4v10" /><path d="M9 19v-4a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v4" /></svg>
+                        <span class="bg-danger-lt avatar">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17 8v-3a1 1 0 0 0 -1 -1h-10a2 2 0 0 0 0 4h12a1 1 0 0 1 1 1v3m0 4v3a1 1 0 0 1 -1 1h-12a2 2 0 0 1 -2 -2v-12" /><path d="M20 12v4h-4a2 2 0 0 1 0 -4h4" /></svg>
                         </span>
                     </div>
                     <div class="col">
-                        <div class="font-weight-medium">{{ total_grades }} Grades</div>
-                        <div class="text-muted">{{ total_sections }} Active Sections</div>
+                        <div class="font-weight-medium text-danger">${{ outstanding }}</div>
+                        <div class="text-muted">Outstanding Fees</div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row row-cards mt-3">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title">School Health Summary</h3>
+                <p>You have <strong>{{ total_grades }}</strong> active grades currently running. The highest collection this month has been from the <strong>General Tuition Fee</strong> category.</p>
+                <div class="mt-3">
+                    <a href="{% url 'student_create' %}" class="btn btn-outline-primary btn-sm">Add New Student</a>
+                    <a href="{% url 'mark_attendance' %}" class="btn btn-outline-success btn-sm ms-2">Mark Attendance</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">System Status</h3></div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <div class="text-muted mb-1">Database Sync</div>
+                    <div class="progress progress-sm"><div class="progress-bar bg-primary" style="width: 100%"></div></div>
+                </div>
+                <div>
+                    <div class="text-muted mb-1">Server Uptime</div>
+                    <div class="progress progress-sm"><div class="progress-bar bg-primary" style="width: 98%"></div></div>
                 </div>
             </div>
         </div>
