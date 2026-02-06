@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-xl">
+    <div class="page-header">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2 class="page-title">Invoice #{{ invoice.id }}</h2>
+                <div class="text-muted">{{ invoice.student }}</div>
+            </div>
+            <div class="col-auto">
+                <a href="{% url 'invoice_list' %}" class="btn btn-secondary">Back</a>
+            </div>
+        </div>
+    </div>
+    <div class="card mt-3">
+        <div class="card-body">
+            <h3>Fee: {{ invoice.fee_item.name }}</h3>
+            <p class="display-5">${{ invoice.amount }}</p>
+            <p>Status: <strong>{{ invoice.get_status_display }}</strong></p>
+            <p>Due Date: {{ invoice.due_date }}</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

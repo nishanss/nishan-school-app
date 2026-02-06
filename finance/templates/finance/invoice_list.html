@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-xl">
+    <div class="page-header d-print-none">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2 class="page-title">Financial Overview</h2>
+            </div>
+            <div class="col-auto ms-auto">
+                <a href="{% url 'invoice_create_bulk' %}" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                    Generate Bulk Invoices
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li class="nav-item">
+                    <a class="nav-link {% if not current_status %}active{% endif %}" href="{% url 'invoice_list' %}">All</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if current_status == 'unpaid' %}active{% endif %}" href="?status=unpaid">Unpaid</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if current_status == 'paid' %}active{% endif %}" href="?status=paid">Paid</a>
+                </li>
+            </ul>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-vcenter card-table">
+                <thead>
+                    <tr>
+                        <th>Invoice #</th>
+                        <th>Student</th>
+                        <th>Fee Type</th>
+                        <th>Amount</th>
+                        <th>Due Date</th>
+                        <th>Status</th>
+                        <th class="w-1"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for invoice in invoices %}
+                    <tr>
+                        <td class="text-secondary">#{{ invoice.id }}</td>
+                        <td>
+                            <div>{{ invoice.student.first_name }} {{ invoice.student.last_name }}</div>
+                            <div class="text-muted small">Roll: {{ invoice.student.roll_number }}</div>
+                        </td>
+                        <td>{{ invoice.fee_item.name }}</td>
+                        <td>${{ invoice.amount }}</td>
+                        <td>{{ invoice.due_date }}</td>
+                        <td>
+                            {% if invoice.status == 'paid' %}
+                                <span class="badge bg-success-lt">Paid</span>
+                            {% elif invoice.status == 'overdue' %}
+                                <span class="badge bg-danger-lt">Overdue</span>
+                            {% else %}
+                                <span class="badge bg-warning-lt">Unpaid</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'invoice_detail' invoice.pk %}" class="btn btn-sm btn-ghost-secondary">View</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center py-4">No invoices found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}
