@@ -14,8 +14,17 @@ def mark_attendance(request):
     if selected_section_id:
         students = Student.objects.filter(section_id=selected_section_id, is_active=True)
 
+        existing_attendance = Attendance.objects.filter(
+            date=selected_date, 
+            section_id=selected_section_id
+        ).values_list('student_id', 'status')
+
+        attendance_dict = dict(existing_attendance)
+
+        for student in students:
+            student.current_status = attendance_dict.get(student.id, 'present')
+
     if request.method == 'POST':
-        # This is where we loop through the students and save the data
         for student in students:
             status = request.POST.get(f'status_{student.id}')
             Attendance.objects.update_or_create(
@@ -24,7 +33,7 @@ def mark_attendance(request):
                 defaults={'status': status, 'section_id': selected_section_id}
             )
         messages.success(request, f"Attendance for {selected_date} saved successfully!")
-        return redirect('mark_attendance')
+        return redirect(f"{request.path}?section={selected_section_id}&date={selected_date}")
 
     return render(request, 'attendance/mark_attendance.html', {
         'sections': sections,

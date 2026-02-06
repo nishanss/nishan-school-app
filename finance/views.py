@@ -12,13 +12,26 @@ def invoice_list(request):
     
     invoices = Invoice.objects.all().select_related('student', 'fee_item').order_by('-date_issued')
     
+    fee_item_id = request.GET.get('fee_item')
+    student_query = request.GET.get('student_name')
+    
+    if fee_item_id:
+        invoices = invoices.filter(fee_item_id=fee_item_id)
+
     if status:
         invoices = invoices.filter(status=status)
+
+    if student_query:
+        invoices = invoices.filter(student__first_name__icontains=student_query) | \
+                   invoices.filter(student__last_name__icontains=student_query)
         
-    return render(request, 'finance/invoice_list.html', {
+    context = {
         'invoices': invoices,
-        'current_status': status
-    })
+        'fee_items': FeeItem.objects.all(),
+        'status_choices': Invoice.STATUS_CHOICES,
+        'current_filters': request.GET
+    }
+    return render(request, 'finance/invoice_list.html', context)
 
 @login_required
 def invoice_create_bulk(request):

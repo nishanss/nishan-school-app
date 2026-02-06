@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @page { size: A4; margin: 1cm; }
+        body { font-family: Helvetica, sans-serif; color: #333; }
+        .header { text-align: center; border-bottom: 2px solid #444; padding-bottom: 10px; }
+        .school-name { font-size: 24pt; font-weight: bold; margin: 0; }
+        .report-title { font-size: 16pt; color: #666; }
+        .student-info { margin: 20px 0; width: 100%; }
+        .student-info td { padding: 5px; }
+        table.marks-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        table.marks-table th, table.marks-table td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        table.marks-table th { background-color: #f2f2f2; }
+        .footer { margin-top: 50px; text-align: right; font-style: italic; }
+        .pass { color: green; font-weight: bold; }
+        .fail { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <p class="school-name">MY SCHOOL ACADEMY</p>
+        <p class="report-title">OFFICIAL PROGRESS REPORT</p>
+    </div>
+
+    <table class="student-info">
+        <tr>
+            <td><strong>Student:</strong> {{ student.first_name }} {{ student.last_name }}</td>
+            <td><strong>Roll Number:</strong> {{ student.roll_number }}</td>
+        </tr>
+        <tr>
+            <td><strong>Section:</strong> {{ student.section }}</td>
+            <td><strong>Date:</strong> {{ today }}</td>
+        </tr>
+    </table>
+
+    <table class="marks-table">
+        <thead>
+            <tr>
+                <th>Subject</th>
+                <th>Exam</th>
+                <th>Marks</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for mark in marks %}
+            <tr>
+                <td>{{ mark.exam.subject.name }}</td>
+                <td>{{ mark.exam.name }}</td>
+                <td>{{ mark.marks_obtained }} / {{ mark.exam.max_marks }}</td>
+                <td>
+                    {% if mark.marks_obtained >= mark.exam.passing_marks %}
+                        <span class="pass">PASS</span>
+                    {% else %}
+                        <span class="fail">FAIL</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div style="margin-top: 30px;">
+        <p><strong>Overall Average:</strong> {{ avg_score }}%</p>
+        <p><strong>Attendance Performance:</strong> {{ attendance_pc }}%</p>
+    </div>
+
+    <div class="footer">
+        <p>This is a computer-generated document. No signature required.</p>
+    </div>
+</body>
+</html>

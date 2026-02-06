@@ -17,6 +17,27 @@
         </div>
     </div>
 
+    <div class="row mb-3">
+        <form class="d-flex gap-2">
+            <select name="grade" class="form-select w-auto">
+                <option value="">All Grades</option>
+                {% for g in grades %}
+                    <option value="{{ g.id }}">{{ g.name }}</option>
+                {% endfor %}
+            </select>
+            
+            <select name="type" class="form-select w-auto">
+                <option value="">All Types</option>
+                {% for key, val in exam_types %}
+                    <option value="{{ key }}">{{ val }}</option>
+                {% endfor %}
+            </select>
+            
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a href="{% url 'exam_list' %}" class="btn btn-link">Reset</a>
+        </form>
+    </div>
+
     <div class="card mt-3">
         <div class="table-responsive">
             <table class="table table-vcenter card-table">

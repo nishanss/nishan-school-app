@@ -6,6 +6,12 @@ from django.contrib.auth.decorators import login_required
 # from django.db import models
 from django.db.models import Q
 from academics.models import Section
+from django.db.models import Avg
+import io
+from django.http import HttpResponse
+from django.template.loader import get_template
+from xhtml2pdf import pisa
+from datetime import date
 
 @login_required
 def student_list(request):
@@ -57,7 +63,26 @@ def student_create(request):
 @login_required
 def student_detail(request, pk):
     student = get_object_or_404(Student, pk=pk)
-    return render(request, 'students/student_detail.html', {'student': student})
+    
+    attendance = student.attendance_records.all()
+    total_days = attendance.count()
+    days_present = attendance.filter(status='present').count()
+    attendance_pc = (days_present / total_days * 100) if total_days > 0 else 0
+    
+    marks = student.mark_set.all().select_related('exam__subject')
+    avg_score = marks.aggregate(Avg('marks_obtained'))['marks_obtained__avg'] or 0
+    
+    invoices = student.invoices.all().order_by('-date_issued')
+    unpaid_balance = sum(inv.amount for inv in invoices.filter(status='unpaid'))
+
+    return render(request, 'students/student_detail.html', {
+        'student': student,
+        'attendance_pc': round(attendance_pc, 1),
+        'avg_score': round(avg_score, 1),
+        'marks': marks,
+        'invoices': invoices,
+        'unpaid_balance': unpaid_balance,
+    })
 
 @login_required
 def student_update(request, pk):
@@ -81,3 +106,36 @@ def student_delete(request, pk):
         return redirect('student_list')
     
     return render(request, 'students/student_confirm_delete.html', {'student': student})
+
+@login_required
+def download_report_card(request, pk):
+    student = get_object_or_404(Student, pk=pk)
+    
+    marks = student.mark_set.all().select_related('exam__subject')
+    avg_score = marks.aggregate(Avg('marks_obtained'))['marks_obtained__avg'] or 0
+    
+    attendance = student.attendance_records.all()
+    days_present = attendance.filter(status='present').count()
+    total_days = attendance.count()
+    attendance_pc = (days_present / total_days * 100) if total_days > 0 else 0
+
+    template_path = 'students/report_card_pdf.html'
+    context = {
+        'student': student,
+        'marks': marks,
+        'avg_score': round(avg_score, 2),
+        'attendance_pc': round(attendance_pc, 1),
+        'today': date.today(),
+    }
+    
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="{student.roll_number}_report.pdf"'
+    
+    template = get_template(template_path)
+    html = template.render(context)
+
+    pisa_status = pisa.CreatePDF(html, dest=response)
+    
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
