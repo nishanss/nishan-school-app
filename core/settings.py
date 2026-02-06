@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'subjects',
     'exams',
     'finance',
+    'staff',
+    'curriculum',
 ]
 
 MIDDLEWARE = [

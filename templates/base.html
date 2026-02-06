@@ -4,180 +4,150 @@
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
-    <title>{% block title %}School Management{% endblock %}</title>
+    <title>{% block title %}MySchool Pro{% endblock %}</title>
     <link href="{% static 'vendor/tabler/css/tabler.min.css' %}" rel="stylesheet"/>
     <style>
       @import url('https://rsms.me/inter/inter.css');
-      :root { --tblr-font-sans-serif: 'Inter var', -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif; }
-      body { font-feature-settings: "cv03", "cv04", "cv11"; }
+      :root { --tblr-font-sans-serif: 'Inter var', sans-serif; }
+      .navbar-vertical .navbar-nav .nav-link { padding: 0.75rem 1rem; }
+      
+      .dropdown-item.active {
+        background-color: rgba(32, 107, 196, 0.1) !important; 
+        color: #206bc4 !important;
+        font-weight: 600;
+        border-radius: 4px;
+      }
+      
+      .nav-link.active-parent {
+        background: transparent !important;
+        color: var(--tblr-primary) !important;
+        font-weight: 600;
+      }
+      .navbar-vertical .navbar-nav .nav-item.dropdown .nav-link.show {
+        background: transparent !important;
+      }
     </style>
     {% block extra_css %}{% endblock %}
   </head>
   <body data-bs-theme="light">
-
     <script>
-      const theme = localStorage.getItem('tablerTheme') || 'light';
-      document.body.setAttribute('data-bs-theme', theme);
+      const savedTheme = localStorage.getItem('tablerTheme') || 'light';
+      document.body.setAttribute('data-bs-theme', savedTheme);
     </script>
 
     <div class="page">
       {% if user.is_authenticated %}
-
-      <!-- <header class="navbar navbar-expand-md d-print-none"> -->
-
-      <!-- <header class="navbar navbar-expand-md d-print-none sticky-top">
-        <div class="container-xl">
-
-          <h1 class="navbar-brand d-none-navbar-horizontal pe-0 pe-md-3">
-            <a href="/">Nishan's MySchool System</a>
+      <aside class="navbar navbar-vertical navbar-expand-lg d-print-none">
+        <div class="container-fluid">
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <h1 class="navbar-brand navbar-brand-autodark mt-2">
+            <a href="/">
+              <span class="text-primary">MY</span>SCHOOL
+            </a>
           </h1>
 
-          <div class="d-flex align-items-center gap-3">
-          <div class="d-none d-md-flex">
-            <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="Enable dark mode" data-bs-toggle="tooltip" data-bs-placement="bottom" onclick="setTheme('dark')">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg>
-            </a>
-            <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="Enable light mode" data-bs-toggle="tooltip" data-bs-placement="bottom" onclick="setTheme('light')">
-              <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="12" r="4" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>
-            </a>
-          </div>
-
-          <div class="nav-item dropdown">
-            <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
-              <span class="avatar avatar-sm bg-blue-lt">{{ user.username|slice:":3"|upper }}</span>
-              <div class="d-none d-xl-block ps-2">
-                <div>{{ user.get_full_name|default:user.username }}</div>
-                <div class="mt-1 small text-muted">{% if user.is_superuser %}Administrator{% else %}Staff{% endif %}</div>
-              </div>
-            </a>
-            <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-              <a href="/admin" class="dropdown-item">Admin Panel</a>
-              <div class="dropdown-divider"></div>
-              <form action="{% url 'logout' %}" method="post" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit" class="dropdown-item">Logout</button>
-              </form>
-            </div>
-          </div>
-        </div>
-        </div>
-
-        
-
-      </header> -->
-
-      <header class="navbar navbar-expand-md d-print-none sticky-top">
-        <div class="container-xl">
-          <h1 class="navbar-brand d-none-navbar-horizontal pe-0 pe-md-3">
-            <a href="/">Nishan's School System</a>
-          </h1>
-      
-          <div class="collapse navbar-collapse" id="navbar-menu">
-            <ul class="navbar-nav">
+          <div class="collapse navbar-collapse" id="sidebar-menu">
+            <ul class="navbar-nav pt-lg-3">
+              
               <li class="nav-item">
-                <a class="nav-link" href="{% url 'dashboard_index' %}">
-                  <span class="nav-link-title">Home</span>
+                <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">
+                  <span class="nav-link-icon d-md-none d-lg-inline-block"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M5 12 3 12 12 3 21 12 19 12" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg></span>
+                  <span class="nav-link-title">Dashboard</span>
                 </a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'student_list' %}">
-                  <span class="nav-link-title">Students</span>
+
+              <li class="nav-item dropdown">
+                {% if "/students/" in request.path or "/academics/" in request.path or "/subjects/" in request.path or "/attendance/" in request.path or "/curriculum/" in request.path %}
+                  <a class="nav-link dropdown-toggle show active-parent" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="true">
+                {% else %}
+                  <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
+                {% endif %}
+                <span class="nav-link-icon d-md-none d-lg-inline-block"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M22 9l-10-5l-10 5l10 5l10-5z" /><path d="M6 10.6v5.4a6 3 0 0 0 12 0v-5.4" /></svg></span>
+                <span class="nav-link-title">Academic</span>
                 </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'academic_dashboard' %}" >
-                  <span class="nav-link-title">Academics</span>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'mark_attendance' %}">
-                    <span class="nav-link-title">Attendance</span>
-                </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'subject_list' %}">
-                  <span class="nav-link-title">Subjects</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'exam_list' %}">
-                  <span class="nav-link-title">Exams</span>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'invoice_list' %}">
-                  <span class="nav-link-title">Finance</span>
-              </a>
-          </li>
-            </ul>
-          </div>
-      
-          <div class="d-flex align-items-center gap-3">
-            <div class="d-none d-md-flex">
-              <a href="?theme=dark" class="nav-link px-0 hide-theme-dark" title="Enable dark mode" data-bs-toggle="tooltip" data-bs-placement="bottom" onclick="setTheme('dark')">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" /></svg>
-              </a>
-              <a href="?theme=light" class="nav-link px-0 hide-theme-light" title="Enable light mode" data-bs-toggle="tooltip" data-bs-placement="bottom" onclick="setTheme('light')">
-                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><circle cx="12" cy="12" r="4" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>
-              </a>
-            </div>
-      
-            <div class="nav-item dropdown">
-              <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
-                <span class="avatar avatar-sm bg-blue-lt">{{ user.username|slice:":3"|upper }}</span>
-                <div class="d-none d-xl-block ps-2">
-                  <div>{{ user.get_full_name|default:user.username }}</div>
-                  <div class="mt-1 small text-muted">{% if user.is_superuser %}Administrator{% else %}Staff{% endif %}</div>
+                <div class="dropdown-menu {% if '/students/' in request.path or '/academics/' in request.path or '/subjects/' in request.path or '/attendance/' in request.path %}show{% endif %}">
+                  <a class="dropdown-item {% if '/students/' in request.path %}active{% endif %}" href="{% url 'student_list' %}">Students</a>
+                  <a class="dropdown-item {% if '/academics/' in request.path %}active{% endif %}" href="{% url 'academic_dashboard' %}">Grades & Sections</a>
+                  <a class="dropdown-item {% if '/attendance/' in request.path %}active{% endif %}" href="{% url 'mark_attendance' %}">Daily Attendance</a>
+                  <a class="dropdown-item {% if '/subjects/' in request.path %}active{% endif %}" href="{% url 'subject_list' %}">Subjects</a>
+                  <!-- <div class="dropdown-divider"></div> -->
+                  <a class="dropdown-item {% if '/curriculum/' in request.path %}active{% endif %}" href="/curriculum/">Syllabus & Curriculum</a>
                 </div>
-              </a>
-              <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                <a href="/admin" class="dropdown-item">Admin Panel</a>
-                <div class="dropdown-divider"></div>
-                <form action="{% url 'logout' %}" method="post" style="display: inline;">
-                  {% csrf_token %}
-                  <button type="submit" class="dropdown-item">Logout</button>
+              </li>
+
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle {% if '/exam' in request.path or '/finance' in request.path %}show active-parent{% endif %}" 
+                   href="#navbar-extra" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button">
+                  <span class="nav-link-icon d-md-none d-lg-inline-block"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M9 5h10l2 2l-2 2h-10a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1z" /><path d="M13 13h7l2 2l-2 2h-7a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1z" /><path d="M6 7v10" /><path d="M4 7h4" /><path d="M4 17h4" /></svg></span>
+                  <span class="nav-link-title">Operations</span>
+                </a>
+                <div class="dropdown-menu {% if '/exam' in request.path or '/finance' in request.path %}show{% endif %}">
+                  <a class="dropdown-item {% if '/exam' in request.path %}active{% endif %}" href="{% url 'exam_list' %}">Exams & Marks</a>
+                  <a class="dropdown-item {% if '/finance' in request.path %}active{% endif %}" href="{% url 'invoice_list' %}">Fees & Finance</a>
+                </div>
+              </li>
+
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle {% if '/staff/' in request.path %}show active-parent{% endif %}" 
+                   href="#navbar-staff" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button">
+                  <span class="nav-link-icon d-md-none d-lg-inline-block"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><circle cx="9" cy="7" r="4" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></svg></span>
+                  <span class="nav-link-title">Staff</span>
+                </a>
+                <div class="dropdown-menu {% if '/staff/' in request.path %}show{% endif %}">
+                  <a class="dropdown-item {% if request.path == '/staff/' %}active{% endif %}" href="{% url 'staff_list' %}">Staff Directory</a>
+                  <a class="dropdown-item {% if '/staff/create/' in request.path %}active{% endif %}" href="{% url 'staff_create' %}">Add Staff Member</a>
+                </div>
+              </li>
+
+              
+
+            </ul>
+
+            <div class="mt-auto p-3 border-top">
+                <button onclick="toggleTheme()" class="btn btn-icon w-100 mb-2" id="theme-toggle" title="Toggle Dark Mode">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><circle cx="12" cy="12" r="4" /><path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" /></svg>
+                </button>
+                <form action="{% url 'logout' %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger w-100">Logout</button>
                 </form>
-              </div>
             </div>
           </div>
         </div>
-      </header>
-
+      </aside>
       {% endif %}
 
       <div class="page-wrapper">
-        <div class="page-header d-print-none">
-          <div class="container-xl">
-            {% if messages %}
-            {% for message in messages %}
-              <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible" role="alert">
-                <div class="d-flex">
-                  <div>{{ message }}</div>
-                </div>
-                <a class="btn-close" data-bs-dismiss="alert" aria-label="close"></a>
-              </div>
-            {% endfor %}
-            {% endif %}
-            {% block page_title %}{% endblock %}
-          </div>
-        </div>
-
         <div class="page-body">
           <div class="container-xl">
-            {% block content %}
-            {% endblock %}
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible" role="alert">
+                    {{ message }}
+                    <a class="btn-close" data-bs-dismiss="alert"></a>
+                </div>
+                {% endfor %}
+            {% endif %}
+            
+            {% block page_title %}{% endblock %}
+            {% block content %}{% endblock %}
           </div>
         </div>
       </div>
     </div>
 
     <script src="{% static 'vendor/tabler/js/tabler.min.js' %}" defer></script>
-    {% block extra_js %}{% endblock %}
     <script>
-      function setTheme(theme) {
-        localStorage.setItem('tablerTheme', theme);
-        document.body.setAttribute('data-bs-theme', theme);
+      function toggleTheme() {
+        const body = document.body;
+        const currentTheme = body.getAttribute('data-bs-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        body.setAttribute('data-bs-theme', newTheme);
+        localStorage.setItem('tablerTheme', newTheme);
       }
     </script>
+    {% block extra_js %}{% endblock %}
   </body>
 </html>
