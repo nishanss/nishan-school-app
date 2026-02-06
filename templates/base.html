@@ -73,7 +73,7 @@
                   <a class="dropdown-item {% if '/attendance/' in request.path %}active{% endif %}" href="{% url 'mark_attendance' %}">Daily Attendance</a>
                   <a class="dropdown-item {% if '/subjects/' in request.path %}active{% endif %}" href="{% url 'subject_list' %}">Subjects</a>
                   <!-- <div class="dropdown-divider"></div> -->
-                  <a class="dropdown-item {% if '/curriculum/' in request.path %}active{% endif %}" href="/curriculum/">Syllabus & Curriculum</a>
+                  <a class="dropdown-item {% if '/curriculum/' in request.path %}active{% endif %}" href="{% url 'curriculum_list' %}">Syllabus & Curriculum</a>
                 </div>
               </li>
 

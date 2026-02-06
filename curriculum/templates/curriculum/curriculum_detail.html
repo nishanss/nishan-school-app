@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+<div class="page-pretitle">{{ curriculum.grade.name }}</div>
+<h2 class="page-title">{{ curriculum.subject.name }} Curriculum</h2>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table">
+            <thead>
+                <tr>
+                    <th>Week</th>
+                    <th>Topic/Lesson</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for lesson in lessons %}
+                <tr>
+                    <td class="text-muted">Week {{ lesson.week_number }}</td>
+                    <td>
+                        <div class="font-weight-medium">{{ lesson.title }}</div>
+                        <div class="text-muted small">{{ lesson.description }}</div>
+                    </td>
+                    <td>
+                        {% if lesson.is_completed %}
+                        <span class="badge bg-success">Completed</span>
+                        {% else %}
+                        <span class="badge bg-warning">Pending</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="3" class="text-center">No lessons added yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
