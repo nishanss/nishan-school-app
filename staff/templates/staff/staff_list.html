@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+<div class="row align-items-center">
+    <div class="col">
+        <h2 class="page-title">Staff Management</h2>
+        <div class="text-muted small">{{ staff_members.count }} staff members</div>
+    </div>
+    <div class="col-auto ms-auto">
+        <a href="{% url 'staff_create' %}" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+            Add New Staff
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th>Email / Phone</th>
+                    <th>Status</th>
+                    <th class="w-1"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for staff in staff_members %}
+                <tr>
+                    <td>
+                        <a href="{% url 'staff_detail' staff.pk %}"><div class="d-flex py-1 align-items-center">
+                            <span class="avatar me-2" style="background-image: url(...)">
+                                {{ staff.first_name|slice:":1" }}{{ staff.last_name|slice:":1" }}
+                            </span>
+                            <div class="flex-fill">
+                                <div class="font-weight-medium">{{ staff.first_name }} {{ staff.last_name }}</div>
+                                <div class="text-muted"><a href="#" class="text-reset">{{ staff.staff_id }}</a></div>
+                            </div>
+                        </div></a>
+                    </td>
+                    <td>
+                        <div class="badge bg-blue-lt">{{ staff.get_role_display }}</div>
+                    </td>
+                    <td>
+                        <div>{{ staff.email }}</div>
+                        <div class="text-muted">{{ staff.phone }}</div>
+                    </td>
+                    <td>
+                        {% if staff.is_active %}
+                            <span class="badge bg-success me-1"></span> Active
+                        {% else %}
+                            <span class="badge bg-danger me-1"></span> Inactive
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="#" class="btn btn-ghost-secondary btn-sm">Edit</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center p-4">No staff members found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
