@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-xl">
+    <div class="page-header d-print-none">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2 class="page-title">Daily Attendance</h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-4">
+                    <label class="form-label">Select Section</label>
+                    <select name="section" class="form-select" onchange="this.form.submit()">
+                        <option value="">-- Choose Section --</option>
+                        {% for section in sections %}
+                        <option value="{{ section.id }}" {% if selected_section == section.id|stringformat:"i" %}selected{% endif %}>
+                            {{ section }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label">Date</label>
+                    <input type="date" name="date" class="form-control" value="{{ selected_date }}" onchange="this.form.submit()">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {% if students %}
+    <form method="post">
+        {% csrf_token %}
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table table-vcenter card-table">
+                    <thead>
+                        <tr>
+                            <th>Roll #</th>
+                            <th>Student Name</th>
+                            <th class="text-center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.roll_number }}</td>
+                            <td>{{ student.first_name }} {{ student.last_name }}</td>
+                            <td>
+                                <div class="btn-group w-100" role="group">
+                                    <input type="radio" class="btn-check" name="status_{{ student.id }}" id="present_{{ student.id }}" value="present" checked>
+                                    <label for="present_{{ student.id }}" class="btn btn-outline-success">P</label>
+
+                                    <input type="radio" class="btn-check" name="status_{{ student.id }}" id="absent_{{ student.id }}" value="absent">
+                                    <label for="absent_{{ student.id }}" class="btn btn-outline-danger">A</label>
+
+                                    <input type="radio" class="btn-check" name="status_{{ student.id }}" id="leave_{{ student.id }}" value="Leave">
+                                    <label for="leave_{{ student.id }}" class="btn btn-outline-warning">L</label>
+
+                                    <input type="radio" class="btn-check" name="status_{{ student.id }}" id="late_{{ student.id }}" value="late">
+                                    <label for="late_{{ student.id }}" class="btn btn-outline-info">T</label>
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer text-end">
+                <button type="submit" class="btn btn-primary">Save Attendance</button>
+            </div>
+        </div>
+    </form>
+    {% elif selected_section %}
+    <div class="alert alert-info">No active students found in this section.</div>
+    {% else %}
+    <div class="alert alert-warning">Please select a section to begin marking attendance.</div>
+    {% endif %}
+</div>
+{% endblock %}

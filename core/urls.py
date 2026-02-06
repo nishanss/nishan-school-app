@@ -33,7 +33,7 @@ urlpatterns = [
     path('students/<int:pk>/edit/', student_update, name='student_update'),
     path('students/<int:pk>/delete/', student_delete, name='student_delete'),
     path('academics/', include('academics.urls')),
-
+    path('attendance/', include('attendance.urls')),
 ]
 
 if settings.DEBUG:
