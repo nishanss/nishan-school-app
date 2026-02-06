@@ -34,6 +34,7 @@ urlpatterns = [
     path('students/<int:pk>/delete/', student_delete, name='student_delete'),
     path('academics/', include('academics.urls')),
     path('attendance/', include('attendance.urls')),
+    path('subjects/', include('subjects.urls')),
 ]
 
 if settings.DEBUG:
