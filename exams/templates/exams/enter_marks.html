@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-xl">
+    <div class="page-header">
+        <h2 class="page-title">Enter Marks: {{ exam.name }}</h2>
+        <div class="text-muted">{{ exam.subject.name }} | Max Marks: {{ exam.max_marks }}</div>
+    </div>
+
+    <form method="post" class="mt-3">
+        {% csrf_token %}
+        <div class="card">
+            <div class="table-responsive">
+                <table class="table table-vcenter card-table">
+                    <thead>
+                        <tr>
+                            <th>Roll #</th>
+                            <th>Student</th>
+                            <th class="w-25">Marks Obtained</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                        <tr>
+                            <td>{{ student.roll_number }}</td>
+                            <td>{{ student.first_name }} {{ student.last_name }}</td>
+                            <td>
+                                <input type="number" step="0.01" name="marks_{{ student.id }}" 
+                                       class="form-control" max="{{ exam.max_marks }}" 
+                                       placeholder="0.00">
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer text-end">
+                <button type="submit" class="btn btn-success">Submit All Marks</button>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

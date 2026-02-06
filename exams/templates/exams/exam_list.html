@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container-xl">
+    <div class="page-header d-print-none">
+        <div class="row align-items-center">
+            <div class="col">
+                <h2 class="page-title">Examination Schedule</h2>
+                <div class="text-muted small mt-1">Manage tests and grade entries</div>
+            </div>
+            <div class="col-auto ms-auto">
+                <a href="/admin/exams/exam/add/" class="btn btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                    Schedule New Exam
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-3">
+        <div class="table-responsive">
+            <table class="table table-vcenter card-table">
+                <thead>
+                    <tr>
+                        <th>Exam Name</th>
+                        <th>Subject</th>
+                        <th>Section</th>
+                        <th>Date</th>
+                        <th>Max Marks</th>
+                        <th class="w-1"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for exam in exams %}
+                    <tr>
+                        <td>
+                            <div class="font-weight-medium">{{ exam.name }}</div>
+                            <div class="text-muted small">{{ exam.get_exam_type_display }}</div>
+                        </td>
+                        <td>{{ exam.subject.name }}</td>
+                        <td>{{ exam.section }}</td>
+                        <td>{{ exam.date }}</td>
+                        <td>{{ exam.max_marks }}</td>
+                        <td>
+                            <a href="{% url 'enter_marks' exam.id %}" class="btn btn-outline-primary btn-sm">
+                                Enter Marks
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">No exams scheduled yet.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

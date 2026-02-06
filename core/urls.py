@@ -35,6 +35,7 @@ urlpatterns = [
     path('academics/', include('academics.urls')),
     path('attendance/', include('attendance.urls')),
     path('subjects/', include('subjects.urls')),
+    path('exams/', include('exams.urls')),
 ]
 
 if settings.DEBUG:
