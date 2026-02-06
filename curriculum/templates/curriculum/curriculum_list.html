@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+<h2 class="page-title">Syllabus & Curriculum</h2>
+{% endblock %}
+
+{% block content %}
+<div class="row row-cards">
+    {% for grade in grades %}
+    <div class="col-md-6 col-lg-4">
+        <div class="card">
+            <div class="card-header"><h3 class="card-title">{{ grade.name }}</h3></div>
+            <div class="list-group list-group-flush">
+                {% for curr in grade.curriculum_set.all %}
+                <a href="{% url 'curriculum_detail' curr.pk %}" class="list-group-item list-group-item-action d-flex justify-content-between">
+                    {{ curr.subject.name }}
+                    <span class="badge bg-primary-lt">{{ curr.lessons.count }} Lessons</span>
+                </a>
+                {% empty %}
+                <div class="p-3 text-muted small">No curriculum defined yet.</div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
