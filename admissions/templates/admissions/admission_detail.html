@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+<h2 class="page-title">Approve Admission: {{ application.first_name }}</h2>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-header"><h3 class="card-title">Application Details</h3></div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-5">Name:</dt> <dd class="col-7">{{ application.first_name }} {{ application.last_name }}</dd>
+                    <dt class="col-5">DOB:</dt> <dd class="col-7">{{ application.date_of_birth }}</dd>
+                    <dt class="col-5">Parent:</dt> <dd class="col-7">{{ application.parent_phone }}</dd>
+                    <dt class="col-5">Address:</dt> <dd class="col-7">{{ application.address }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <form method="post" class="card">
+            {% csrf_token %}
+            <div class="card-header"><h3 class="card-title bg-success-lt p-1 rounded">Finalize Admission</h3></div>
+            <div class="card-body">
+                <p class="text-muted">To approve this student, please assign them to a specific section and give them a roll number.</p>
+                
+                <div class="mb-3">
+                    <label class="form-label">Assign Section</label>
+                    <select name="section" class="form-select" required>
+                        <option value="">-- Choose Section --</option>
+                        {% for section in sections %}
+                        <option value="{{ section.id }}">{{ section.name }} ({{ section.grade.name }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="mb-3">
+                    <label class="form-label">Assign Roll Number</label>
+                    <input type="text" name="roll_number" class="form-control" required placeholder="e.g. 2024-1001">
+                </div>
+            </div>
+            <div class="card-footer text-end">
+                <a href="{% url 'reject_application' application.id %}" class="btn btn-danger me-2" onclick="return confirm('Are you sure you want to reject this application?')">Reject</a>
+                <button type="submit" class="btn btn-success">Approve & Create Student</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
