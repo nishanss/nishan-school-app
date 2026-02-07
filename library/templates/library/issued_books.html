@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+<div class="row align-items-center">
+    <div class="col">
+        <h2 class="page-title">Library Logs</h2>
+    </div>
+    <div class="col-auto ms-auto">
+        <a href="{% url 'issue_book' %}" class="btn btn-primary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M12 5l0 14" /><path d="M5 12l14 0" /></svg>
+            Issue New Book
+        </a>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+                <a class="nav-link {% if not current_status %}active{% endif %}" href="{% url 'issued_books' %}">All Logs</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if current_status == 'issued' %}active{% endif %}" href="?status=issued">Currently Issued</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if current_status == 'returned' %}active{% endif %}" href="?status=returned">Returned History</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-vcenter card-table table-striped">
+            <thead>
+                <tr>
+                    <th>Book Title</th>
+                    <th>Student Name</th>
+                    <th>Issue Date</th>
+                    <th>Due Date</th>
+                    <th>Status</th>
+                    <th class="w-1">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for issue in issued %}
+                <tr>
+                    <td>
+                        <div class="font-weight-medium">{{ issue.book.title }}</div>
+                        <div class="text-muted small">ISBN: {{ issue.book.isbn }}</div>
+                    </td>
+                    <td>
+                        <div>{{ issue.student.first_name }} {{ issue.student.last_name }}</div>
+                        <span class="badge bg-blue-lt">{{ issue.student.section.grade.name }}</span>
+                    </td>
+                    <td class="text-muted">{{ issue.issue_date }}</td>
+                    <td class="text-muted">{{ issue.due_date }} {% if issue.return_date %}(Returned: {{ issue.return_date }}){% endif %}</td>
+                    <td>
+                        {% if issue.status == 'issued' %}
+                            {% if issue.due_date < today %}
+                                <span class="badge bg-danger">Overdue</span>
+                            {% else %}
+                                <span class="badge bg-info">On Loan</span>
+                            {% endif %}
+                        {% else %}
+                            <span class="badge bg-success-lt">Returned</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if issue.status == 'issued' %}
+                        <a href="{% url 'return_book' issue.id %}" class="btn btn-sm btn-outline-success">
+                            Mark Returned
+                        </a>
+                        {% else %}
+                        <span class="text-muted small">ID: #{{ issue.id }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-4 text-muted">No records found for this category.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
