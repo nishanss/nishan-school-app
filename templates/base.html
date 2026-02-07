@@ -128,7 +128,17 @@
                 </div>
               </li>
 
-              
+              <li class="nav-item">
+                <a class="nav-link {% if '/admissions/dashboard/' in request.path %}active{% endif %}" href="{% url 'admission_list' %}">
+                    <span class="nav-link-icon d-md-none d-lg-inline-block">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 11h6m-3 -3v6" /></svg>
+                    </span>
+                    <span class="nav-link-title">Admissions</span>
+                    {% if pending_count > 0 %}
+                    <span class="badge badge-sm bg-red ms-2">{{ pending_count }}</span>
+                    {% endif %}
+                </a>
+            </li>
 
             </ul>
 
