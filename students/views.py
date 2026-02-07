@@ -12,6 +12,7 @@ from django.http import HttpResponse
 from django.template.loader import get_template
 from xhtml2pdf import pisa
 from datetime import date
+from django.core.paginator import Paginator
 
 @login_required
 def student_list(request):
@@ -34,9 +35,14 @@ def student_list(request):
     if section_id:
         students = students.filter(section_id=section_id)
 
+    paginator = Paginator(students, 50)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     sections = Section.objects.all()
     return render(request, 'students/student_list.html', {
-        'students': students, 
+        'students': page_obj, 
+        'page_obj': page_obj,
         'sections': sections,
         'current_section': section_id,
         'query': query,

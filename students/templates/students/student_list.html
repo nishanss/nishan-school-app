@@ -170,6 +170,55 @@
       </tbody>
 
     </table>
+
+  </table>
+</div>
+
+{% if page_obj.has_other_pages %}
+  <div class="card-footer d-flex align-items-center">
+    <p class="m-0 text-muted">
+      Showing <span>{{ page_obj.start_index }}</span> to <span>{{ page_obj.end_index }}</span> of <span>{{ page_obj.paginator.count }}</span> entries
+    </p>
+    <ul class="pagination m-0 ms-auto">
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page=1{% if query %}&q={{ query }}{% endif %}{% if current_section %}&section={{ current_section }}{% endif %}">
+          First
+        </a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_section %}&section={{ current_section }}{% endif %}">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><polyline points="15 6 9 12 15 18" /></svg>
+          Prev
+        </a>
+      </li>
+      {% endif %}
+
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+        <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+        <li class="page-item"><a class="page-link" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if current_section %}&section={{ current_section }}{% endif %}">{{ num }}</a></li>
+        {% endif %}
+      {% endfor %}
+
+      {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if current_section %}&section={{ current_section }}{% endif %}">
+          Next
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><polyline points="9 6 15 12 9 18" /></svg>
+        </a>
+      </li>
+      <li class="page-item">
+        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if query %}&q={{ query }}{% endif %}{% if current_section %}&section={{ current_section }}{% endif %}">
+          Last
+        </a>
+      </li>
+      {% endif %}
+    </ul>
   </div>
+  {% endif %}
+
+
 </div>
 {% endblock %}
