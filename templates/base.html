@@ -88,7 +88,34 @@
                   <a class="dropdown-item {% if '/finance' in request.path %}active{% endif %}" href="{% url 'invoice_list' %}">Fees & Finance</a>
                 </div>
               </li>
+              
+              <li class="nav-item">
+                <a class="nav-link {% if '/timetable/' in request.path %}active{% endif %}" href="{% url 'timetable_view' %}">
+                  <span class="nav-link-icon d-md-none d-lg-inline-block">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M16 3l0 4" /><path d="M8 3l0 4" /><path d="M4 11l16 0" /><path d="M8 15l0 2" /><path d="M12 15l0 2" /><path d="M16 15l0 2" /></svg>
+                  </span>
+                  <span class="nav-link-title">Timetable</span>
+                </a>
+              </li>
 
+
+              <li class="nav-item dropdown">
+                {% if "/library/" in request.path %}
+                  <a class="nav-link dropdown-toggle show active-parent" href="#navbar-library" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="true">
+                {% else %}
+                  <a class="nav-link dropdown-toggle" href="#navbar-library" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
+                {% endif %}
+                  <span class="nav-link-icon d-md-none d-lg-inline-block">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6l0 13" /><path d="M12 6l0 13" /><path d="M21 6l0 13" /></svg>
+                  </span>
+                  <span class="nav-link-title">Library</span>
+                </a>
+                <div class="dropdown-menu {% if "/library/" in request.path %}show{% endif %}">
+                  <a class="dropdown-item {% if '/library/' == request.path %}active{% endif %}" href="{% url 'book_list' %}">Book Directory</a>
+                  <a class="dropdown-item {% if '/library/issued/' in request.path %}active{% endif %}" href="{% url 'issued_books' %}">Issued Books</a>
+                </div>
+              </li>
+              
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle {% if '/staff/' in request.path %}show active-parent{% endif %}" 
                    href="#navbar-staff" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button">

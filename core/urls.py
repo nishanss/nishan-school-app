@@ -39,6 +39,8 @@ urlpatterns = [
     path('finance/', include('finance.urls')),
     path('staff/', include('staff.urls')),
     path('curriculum/', include('curriculum.urls')),
+    path('timetable/', include('timetable.urls')),
+    path('library/', include('library.urls')),
 ]
 
 if settings.DEBUG:
