@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'finance',
     'staff',
     'curriculum',
+    'timetable',
 ]
 
 MIDDLEWARE = [
