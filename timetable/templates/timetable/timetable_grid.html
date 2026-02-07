@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+
+{% block page_title %}
+<div class="row align-items-center">
+    <div class="col">
+        <h2 class="page-title">School Timetable</h2>
+    </div>
+    <div class="col-auto ms-auto d-print-none">
+        <button onclick="window.print()" class="btn btn-outline-secondary">
+            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M17 17h2a2 2 0 0 0 2 -2v-4a2 2 0 0 0 -2 -2h-14a2 2 0 0 0 -2 2v4a2 2 0 0 0 2 2h2" /><path d="M17 9v-4a2 2 0 0 0 -2 -2h-6a2 2 0 0 0 -2 2v4" /><path d="M7 13m0 2a2 2 0 0 1 2 -2h6a2 2 0 0 1 2 2v4a2 2 0 0 1 -2 2h-6a2 2 0 0 1 -2 -2z" /></svg>
+            Print Timetable
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="card mb-3 d-print-none">
+    <div class="card-body">
+        <form method="get" id="filter-form" class="row g-2">
+            <div class="col-md-3">
+                <label class="form-label small text-muted">Filter by Grade</label>
+                <select name="grade" class="form-select" onchange="document.getElementsByName('section')[0].value=''; this.form.submit()">
+                    <option value="">-- All Grades --</option>
+                    {% for g in grades %}
+                    <option value="{{ g.id }}" {% if selected_grade == g.id %}selected{% endif %}>{{ g.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        
+            <div class="col-md-3">
+                <label class="form-label small text-muted">Filter by Section</label>
+                <select name="section" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- All Sections --</option>
+                    {% for s in sections %}
+                    <option value="{{ s.id }}" {% if selected_section == s.id %}selected{% endif %}>{{ s.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        
+            <div class="col-md-4">
+                <label class="form-label small text-muted">Filter by Teacher</label>
+                <select name="staff" class="form-select" onchange="this.form.submit()">
+                    <option value="">-- View Individual Teacher Workload --</option>
+                    {% for t in teachers %}
+                    <option value="{{ t.id }}" {% if selected_staff == t.id %}selected{% endif %}>{{ t.first_name }} {{ t.last_name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        
+            <div class="col-md-2 d-flex align-items-end">
+                <a href="{% url 'timetable_view' %}" class="btn btn-link mb-1">Reset All</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="table table-bordered table-vcenter text-center mb-0">
+            <thead>
+                <tr class="bg-light">
+                    <th style="width: 150px;">Time Slot</th>
+                    {% for day_id, day_name in days %}
+                    <th>{{ day_name }}</th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for slot in time_slots %}
+                <tr>
+                    <td class="fw-bold bg-light">
+                        {{ slot.name }}<br>
+                        <small class="text-muted">{{ slot.start_time|time:"H:i" }} - {{ slot.end_time|time:"H:i" }}</small>
+                    </td>
+                    
+                    {% if slot.is_break %}
+                        <td colspan="7" class="bg-yellow-lt fw-bold py-3 text-uppercase tracking-widest">
+                            --- {{ slot.name }} ---
+                        </td>
+                    {% else %}
+                        {% for day_id, day_name in days %}
+                            {% with key=slot.id|stringformat:"i"|add:","|add:day_id|stringformat:"i" %}
+                                {# This is a trick to access the map in templates #}
+                            {% endwith %}
+                            
+                            {% autoescape off %}
+                            <td class="p-2" style="height: 80px; width: 12%;">
+                                {% for coords, entry in schedule_map.items %}
+                                    {% if coords.0 == slot.id and coords.1 == day_id %}
+                                        <div class="badge bg-blue-lt mb-1">{{ entry.subject.name }}</div>
+                                        <div class="small fw-bold">{{ entry.teacher.first_name }}</div>
+                                        <div class="text-muted small">{{ entry.section.name }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                            {% endautoescape %}
+                        {% endfor %}
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+    @media print {
+        .navbar, .d-print-none, .btn-link { display: none !important; }
+        .page-wrapper { margin: 0; padding: 0; }
+        .card { border: none !important; }
+        body { background: white !important; }
+    }
+</style>
+{% endblock %}
