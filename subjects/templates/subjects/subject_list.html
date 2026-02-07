@@ -8,7 +8,8 @@
                 <h2 class="page-title">Curriculum & Subjects</h2>
             </div>
             <div class="col-auto ms-auto">
-                <a href="/admin/subjects/subject/add/" class="btn btn-primary">
+                <!-- <a href="/admin/subjects/subject/add/" class="btn btn-primary"> -->
+                    <a href="{% url 'admin:subjects_subject_add' %}" class="btn btn-primary">
                     Add Subject
                 </a>
             </div>
@@ -45,7 +46,8 @@
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <a href="/admin/subjects/subject/{{ subject.id }}/change/">Edit</a>
+                                    <!-- <a href="/admin/subjects/subject/{{ subject.id }}/change/">Edit</a> -->
+                                    <a href="{% url 'admin:subjects_subject_change' subject.id %}">Edit</a>
                                 </td>
                             </tr>
                             {% empty %}

@@ -22,3 +22,14 @@ class StudentForm(forms.ModelForm):
             'photo': forms.FileInput(attrs={'class': 'form-select'}),
             'is_active': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
+
+    def clean_photo(self):
+        photo = self.cleaned_data.get('photo')
+        if photo:
+            if photo.size > 5 * 1024 * 1024:
+                raise forms.ValidationError("Image file too large ( > 5MB )")
+            
+            if not photo.name.lower().endswith(('.png', '.jpg', '.jpeg')):
+                raise forms.ValidationError("Only PNG, JPG, JPEG allowed")
+        
+        return photo
