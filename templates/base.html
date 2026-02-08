@@ -6,9 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
     <meta name="theme-color" content="#206bc4"/>
     <link rel="manifest" href="{% static 'manifest.json' %}">
-    <title>{% block title %}MySchool Pro{% endblock %}</title>
+    <title>{% block title %}MySchool{% endblock %}</title>
+    
     <link href="{% static 'vendor/tabler/css/tabler.min.css' %}" rel="stylesheet"/>
-    <style>
+    <link href="{% static 'vendor/tabler/css/custom.css' %}" rel="stylesheet"/>
+    
+    <!-- <style>
       @import url('https://rsms.me/inter/inter.css');
       :root { --tblr-font-sans-serif: 'Inter var', sans-serif; }
       .navbar-vertical .navbar-nav .nav-link { padding: 0.75rem 1rem; }
@@ -28,7 +31,7 @@
       .navbar-vertical .navbar-nav .nav-item.dropdown .nav-link.show {
         background: transparent !important;
       }
-    </style>
+    </style> -->
     {% block extra_css %}{% endblock %}
   </head>
   <body data-bs-theme="light">
@@ -44,9 +47,15 @@
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar-menu">
             <span class="navbar-toggler-icon"></span>
           </button>
-          <h1 class="navbar-brand navbar-brand-autodark mt-2">
-            <a href="/">
-              <span class="text-primary">MY</span>SCHOOL
+          <h1 class="navbar-brand">
+            <a href="{% url 'dashboard' %}" class="d-flex align-items-center text-decoration-none">
+              <img src="{% static 'icon-192.png' %}" width="32" height="32" alt="School Logo" class="navbar-brand-image me-2">
+              <div class="d-none d-sm-block text-start">
+                <div class="fw-bold lh-1">MySchool</div>
+                <div class="text-muted small fw-normal mt-1" style="font-size: 0.65rem;">
+                  &copy; Nishan Sanad
+                </div>
+                </div>
             </a>
           </h1>
 
@@ -54,95 +63,113 @@
             <ul class="navbar-nav pt-lg-3">
               
               <li class="nav-item">
-                <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">
-                  <span class="nav-link-icon d-md-none d-lg-inline-block"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M5 12 3 12 12 3 21 12 19 12" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg></span>
-                  <span class="nav-link-title">Dashboard</span>
-                </a>
+                  <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">
+                      <span class="nav-link-icon d-md-none d-lg-inline-block">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M5 12 3 12 12 3 21 12 19 12" /><path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" /><path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" /></svg>
+                      </span>
+                      <span class="nav-link-title">Dashboard</span>
+                  </a>
               </li>
-
+          
               <li class="nav-item dropdown">
-                {% if "/students/" in request.path or "/academics/" in request.path or "/subjects/" in request.path or "/attendance/" in request.path or "/curriculum/" in request.path %}
-                  <a class="nav-link dropdown-toggle show active-parent" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="true">
-                {% else %}
-                  <a class="nav-link dropdown-toggle" href="#navbar-base" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
-                {% endif %}
-                <span class="nav-link-icon d-md-none d-lg-inline-block"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M22 9l-10-5l-10 5l10 5l10-5z" /><path d="M6 10.6v5.4a6 3 0 0 0 12 0v-5.4" /></svg></span>
-                <span class="nav-link-title">Academic</span>
-                </a>
-                <div class="dropdown-menu {% if '/students/' in request.path or '/academics/' in request.path or '/subjects/' in request.path or '/attendance/' in request.path %}show{% endif %}">
-                  <a class="dropdown-item {% if '/students/' in request.path %}active{% endif %}" href="{% url 'student_list' %}">Students</a>
-                  <a class="dropdown-item {% if '/academics/' in request.path %}active{% endif %}" href="{% url 'academic_dashboard' %}">Grades & Sections</a>
-                  <a class="dropdown-item {% if '/attendance/' in request.path %}active{% endif %}" href="{% url 'mark_attendance' %}">Daily Attendance</a>
-                  <a class="dropdown-item {% if '/subjects/' in request.path %}active{% endif %}" href="{% url 'subject_list' %}">Subjects</a>
-                  <!-- <div class="dropdown-divider"></div> -->
-                  <a class="dropdown-item {% if '/curriculum/' in request.path %}active{% endif %}" href="{% url 'curriculum_list' %}">Syllabus & Curriculum</a>
-                </div>
+                  <a class="nav-link dropdown-toggle {% if '/students/' in request.path or '/academics/' in request.path or '/subjects/' in request.path or '/attendance/' in request.path or '/curriculum/' in request.path %}show active-parent{% endif %}" 
+                     href="#navbar-academic" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" 
+                     aria-expanded="{% if '/students/' in request.path or '/academics/' in request.path or '/subjects/' in request.path or '/attendance/' in request.path or '/curriculum/' in request.path %}true{% else %}false{% endif %}">
+                      <span class="nav-link-icon d-md-none d-lg-inline-block">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M22 9l-10-5l-10 5l10 5l10-5z" /><path d="M6 10.6v5.4a6 3 0 0 0 12 0v-5.4" /></svg>
+                      </span>
+                      <span class="nav-link-title">Academic</span>
+                  </a>
+                  <div class="dropdown-menu {% if '/students/' in request.path or '/academics/' in request.path or '/subjects/' in request.path or '/attendance/' in request.path or '/curriculum/' in request.path %}show{% endif %}">
+                      <a class="dropdown-item {% if '/students/' in request.path %}active{% endif %}" href="{% url 'student_list' %}">Students</a>
+                      <a class="dropdown-item {% if '/academics/' in request.path %}active{% endif %}" href="{% url 'academic_dashboard' %}">Grades & Sections</a>
+                      <a class="dropdown-item {% if '/attendance/' in request.path %}active{% endif %}" href="{% url 'mark_attendance' %}">Daily Attendance</a>
+                      <a class="dropdown-item {% if '/subjects/' in request.path %}active{% endif %}" href="{% url 'subject_list' %}">Subjects</a>
+                      <a class="dropdown-item {% if '/curriculum/' in request.path %}active{% endif %}" href="{% url 'curriculum_list' %}">Syllabus & Curriculum</a>
+                  </div>
               </li>
-
+          
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle {% if '/exam' in request.path or '/finance' in request.path %}show active-parent{% endif %}" 
-                   href="#navbar-extra" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button">
-                  <span class="nav-link-icon d-md-none d-lg-inline-block"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M9 5h10l2 2l-2 2h-10a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1z" /><path d="M13 13h7l2 2l-2 2h-7a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1z" /><path d="M6 7v10" /><path d="M4 7h4" /><path d="M4 17h4" /></svg></span>
-                  <span class="nav-link-title">Operations</span>
-                </a>
-                <div class="dropdown-menu {% if '/exam' in request.path or '/finance' in request.path %}show{% endif %}">
-                  <a class="dropdown-item {% if '/exam' in request.path %}active{% endif %}" href="{% url 'exam_list' %}">Exams & Marks</a>
-                  <a class="dropdown-item {% if '/finance' in request.path %}active{% endif %}" href="{% url 'invoice_list' %}">Fees & Finance</a>
-                </div>
+                  <a class="nav-link dropdown-toggle {% if '/exam' in request.path %}show active-parent{% endif %}" 
+                     href="#navbar-exams" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button"
+                     aria-expanded="{% if '/exam' in request.path %}true{% else %}false{% endif %}">
+                      <span class="nav-link-icon d-md-none d-lg-inline-block">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M9 5h10l2 2l-2 2h-10a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1z" /><path d="M13 13h7l2 2l-2 2h-7a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1z" /><path d="M6 7v10" /><path d="M4 7h4" /><path d="M4 17h4" /></svg>
+                      </span>
+                      <span class="nav-link-title">Exams</span>
+                  </a>
+                  <div class="dropdown-menu {% if '/exam' in request.path %}show{% endif %}">
+                      <a class="dropdown-item {% if '/exam' in request.path %}active{% endif %}" href="{% url 'exam_list' %}">Marks & Results</a>
+                  </div>
               </li>
-              
+          
+              <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle {% if '/finance/' in request.path %}show active-parent{% endif %}" 
+                     href="#navbar-finance" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button"
+                     aria-expanded="{% if '/finance/' in request.path %}true{% else %}false{% endif %}">
+                      <span class="nav-link-icon d-md-none d-lg-inline-block">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M16.7 8a3 3 0 0 0 -2.7 -2h-4a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6h-4a3 3 0 0 1 -2.7 -2" /><path d="M12 3v3m0 12v3" /></svg>
+                      </span>
+                      <span class="nav-link-title">Finance</span>
+                  </a>
+                  <div class="dropdown-menu {% if '/finance/' in request.path %}show{% endif %}">
+                      <a class="dropdown-item {% if 'invoices' in request.path %}active{% endif %}" href="{% url 'invoice_list' %}">Student Invoices</a>
+                      <a class="dropdown-item {% if 'payroll' in request.path %}active{% endif %}" href="{% url 'salary_list' %}">Staff Payroll</a>
+                  </div>
+              </li>
+          
               <li class="nav-item">
-                <a class="nav-link {% if '/timetable/' in request.path %}active{% endif %}" href="{% url 'timetable_view' %}">
-                  <span class="nav-link-icon d-md-none d-lg-inline-block">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M16 3l0 4" /><path d="M8 3l0 4" /><path d="M4 11l16 0" /><path d="M8 15l0 2" /><path d="M12 15l0 2" /><path d="M16 15l0 2" /></svg>
-                  </span>
-                  <span class="nav-link-title">Timetable</span>
-                </a>
+                  <a class="nav-link {% if '/timetable/' in request.path %}active{% endif %}" href="{% url 'timetable_view' %}">
+                      <span class="nav-link-icon d-md-none d-lg-inline-block">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M4 5m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" /><path d="M16 3l0 4" /><path d="M8 3l0 4" /><path d="M4 11l16 0" /><path d="M8 15l0 2" /><path d="M12 15l0 2" /><path d="M16 15l0 2" /></svg>
+                      </span>
+                      <span class="nav-link-title">Timetable</span>
+                  </a>
               </li>
-
-
+          
               <li class="nav-item dropdown">
-                {% if "/library/" in request.path %}
-                  <a class="nav-link dropdown-toggle show active-parent" href="#navbar-library" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="true">
-                {% else %}
-                  <a class="nav-link dropdown-toggle" href="#navbar-library" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button" aria-expanded="false">
-                {% endif %}
-                  <span class="nav-link-icon d-md-none d-lg-inline-block">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6l0 13" /><path d="M12 6l0 13" /><path d="M21 6l0 13" /></svg>
-                  </span>
-                  <span class="nav-link-title">Library</span>
-                </a>
-                <div class="dropdown-menu {% if "/library/" in request.path %}show{% endif %}">
-                  <a class="dropdown-item {% if '/library/' == request.path %}active{% endif %}" href="{% url 'book_list' %}">Book Directory</a>
-                  <a class="dropdown-item {% if '/library/issued/' in request.path %}active{% endif %}" href="{% url 'issued_books' %}">Issued Books</a>
-                </div>
+                  <a class="nav-link dropdown-toggle {% if '/library/' in request.path %}show active-parent{% endif %}" 
+                     href="#navbar-library" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button"
+                     aria-expanded="{% if '/library/' in request.path %}true{% else %}false{% endif %}">
+                      <span class="nav-link-icon d-md-none d-lg-inline-block">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M3 19a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6a9 9 0 0 1 9 0a9 9 0 0 1 9 0" /><path d="M3 6l0 13" /><path d="M12 6l0 13" /><path d="M21 6l0 13" /></svg>
+                      </span>
+                      <span class="nav-link-title">Library</span>
+                  </a>
+                  <div class="dropdown-menu {% if '/library/' in request.path %}show{% endif %}">
+                      <a class="dropdown-item {% if request.path == '/library/' or 'book' in request.path and 'issued' not in request.path %}active{% endif %}" href="{% url 'book_list' %}">Book Directory</a>
+                      <a class="dropdown-item {% if '/library/issued/' in request.path %}active{% endif %}" href="{% url 'issued_books' %}">Issued Books</a>
+                  </div>
               </li>
-              
+          
               <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle {% if '/staff/' in request.path %}show active-parent{% endif %}" 
-                   href="#navbar-staff" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button">
-                  <span class="nav-link-icon d-md-none d-lg-inline-block"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><circle cx="9" cy="7" r="4" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></svg></span>
-                  <span class="nav-link-title">Staff</span>
-                </a>
-                <div class="dropdown-menu {% if '/staff/' in request.path %}show{% endif %}">
-                  <a class="dropdown-item {% if request.path == '/staff/' %}active{% endif %}" href="{% url 'staff_list' %}">Staff Directory</a>
-                  <a class="dropdown-item {% if '/staff/create/' in request.path %}active{% endif %}" href="{% url 'staff_create' %}">Add Staff Member</a>
-                </div>
+                  <a class="nav-link dropdown-toggle {% if '/staff/' in request.path %}show active-parent{% endif %}" 
+                     href="#navbar-staff-menu" data-bs-toggle="dropdown" data-bs-auto-close="false" role="button"
+                     aria-expanded="{% if '/staff/' in request.path %}true{% else %}false{% endif %}">
+                      <span class="nav-link-icon d-md-none d-lg-inline-block">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><circle cx="9" cy="7" r="4" /><path d="M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /><path d="M21 21v-2a4 4 0 0 0 -3 -3.85" /></svg>
+                      </span>
+                      <span class="nav-link-title">Staff</span>
+                  </a>
+                  <div class="dropdown-menu {% if '/staff/' in request.path %}show{% endif %}">
+                      <a class="dropdown-item {% if request.path == '/staff/' %}active{% endif %}" href="{% url 'staff_list' %}">Staff Directory</a>
+                      <a class="dropdown-item {% if '/staff/create/' in request.path %}active{% endif %}" href="{% url 'staff_create' %}">Add Staff Member</a>
+                  </div>
               </li>
-
+          
               <li class="nav-item">
-                <a class="nav-link {% if '/admissions/dashboard/' in request.path %}active{% endif %}" href="{% url 'admission_list' %}">
-                    <span class="nav-link-icon d-md-none d-lg-inline-block">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 11h6m-3 -3v6" /></svg>
-                    </span>
-                    <span class="nav-link-title">Admissions</span>
-                    {% if pending_count > 0 %}
-                    <span class="badge badge-sm bg-red ms-2">{{ pending_count }}</span>
-                    {% endif %}
-                </a>
-            </li>
-
-            </ul>
+                  <a class="nav-link {% if '/admissions/' in request.path %}active{% endif %}" href="{% url 'admission_list' %}">
+                      <span class="nav-link-icon d-md-none d-lg-inline-block">
+                          <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" /><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" /><path d="M16 11h6m-3 -3v6" /></svg>
+                      </span>
+                      <span class="nav-link-title">Admissions</span>
+                      {% if pending_count > 0 %}
+                      <span class="badge badge-sm bg-red ms-2">{{ pending_count }}</span>
+                      {% endif %}
+                  </a>
+              </li>
+          
+          </ul>
 
             <div class="mt-auto p-3 border-top">
                 <button onclick="toggleTheme()" class="btn btn-icon w-100 mb-2" id="theme-toggle" title="Toggle Dark Mode">
@@ -170,7 +197,26 @@
                 {% endfor %}
             {% endif %}
             
-            {% block page_title %}{% endblock %}
+            <div class="page-header d-print-none">
+              <div class="container-xl">
+                  <div class="row g-2 align-items-center">
+                      <div class="col-auto">
+                          {% block back_url %}
+                              {# Default: if a page doesn't define a back_url, we show nothing or Dashboard #}
+                              {% if request.path != '/' %}
+                              <a href="/" class="btn btn-icon" title="Back to Dashboard">
+                                  <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg>
+                              </a>
+                              {% endif %}
+                          {% endblock %}
+                      </div>
+                      
+                      <div class="col">
+                          {% block page_title %}{% endblock %}
+                      </div>
+                  </div>
+              </div>
+          </div>
             {% block content %}{% endblock %}
           </div>
         </div>

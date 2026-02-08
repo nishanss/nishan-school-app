@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from .models import Invoice, FeeItem
+from .models import Invoice, FeeItem, SalarySlip
 from academics.models import Section, Grade
 from students.models import Student
-from datetime import date, timedelta
+from staff.models import Staff
+from datetime import date, datetime, timedelta
 
 @login_required
 def invoice_list(request):
@@ -75,3 +76,66 @@ def invoice_create_bulk(request):
 def invoice_detail(request, pk):
     invoice = get_object_or_404(Invoice, pk=pk)
     return render(request, 'finance/invoice_detail.html', {'invoice': invoice})
+
+@login_required
+def salary_list(request):
+    selected_month = request.GET.get('month', date.today().strftime('%Y-%m'))
+    
+    salaries = SalarySlip.objects.filter(month__startswith=selected_month)
+    
+    total_payout = sum(s.net_salary for s in salaries)
+    pending_count = salaries.filter(status='pending').count()
+
+    context = {
+        'salaries': salaries,
+        'selected_month': selected_month,
+        'total_payout': total_payout,
+        'pending_count': pending_count
+    }
+    return render(request, 'finance/salary_list.html', context)
+
+@login_required
+def generate_payroll(request):
+    if request.method == 'POST':
+        month_str = request.POST.get('month') 
+        if not month_str:
+            messages.error(request, "Please select a month.")
+            return redirect('salary_list')
+
+        year, month = map(int, month_str.split('-'))
+        salary_date = date(year, month, 1)
+
+        staff_members = Staff.objects.filter(is_active=True)
+        created_count = 0
+        
+        for staff in staff_members:
+            slip, created = SalarySlip.objects.get_or_create(
+                staff=staff,
+                month=salary_date,
+                defaults={
+                    'basic_salary': staff.base_salary,
+                    'allowances': 0,
+                    'deductions': 0,
+                    'status': 'pending'
+                }
+            )
+            if created:
+                created_count += 1
+        
+        if created_count > 0:
+            messages.success(request, f"Generated payroll for {created_count} staff members!")
+        else:
+            messages.info(request, "Payroll for this month already exists.")
+            
+        return redirect('salary_list')
+
+    return redirect('salary_list')
+
+@login_required
+def mark_salary_paid(request, pk):
+    slip = get_object_or_404(SalarySlip, pk=pk)
+    slip.status = 'paid'
+    slip.payment_date = date.today()
+    slip.save()
+    messages.success(request, f"Paid {slip.staff.first_name} successfully!")
+    return redirect('salary_list')

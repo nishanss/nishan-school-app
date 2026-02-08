@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
+{% block back_url %}
+<a href="{% url 'student_list' %}" class="btn btn-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg>
+</a>
+{% endblock %}
+
 {% block page_title %}
 <div class="row align-items-center">
     <div class="col">
@@ -55,7 +61,7 @@
                 <div class="row align-items-center">
                     <div class="col-auto">
                         <span class="bg-{% if unpaid_balance > 0 %}danger{% else %}success{% endif %} text-white avatar">
-                            ${{ unpaid_balance }}
+                            AED{{ unpaid_balance }}
                         </span>
                     </div>
                     <div class="col">
@@ -131,7 +137,7 @@
                         </div>
                         <div class="col text-truncate">
                             <div class="text-reset d-block">{{ invoice.fee_item.name }}</div>
-                            <div class="d-block text-muted text-truncate mt-n1">${{ invoice.amount }}</div>
+                            <div class="d-block text-muted text-truncate mt-n1">AED{{ invoice.amount }}</div>
                         </div>
                     </div>
                 </div>

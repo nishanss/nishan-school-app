@@ -5,6 +5,7 @@ from .models import AdmissionApplication
 from .forms import AdmissionForm
 from students.models import Student
 from academics.models import Section
+from django.core.mail import send_mail
 
 def apply_online(request):
     if request.method == 'POST':
@@ -49,6 +50,14 @@ def approve_application(request, pk):
         
         application.status = 'approved'
         application.save()
+
+        send_mail(
+        subject=f'Admission Approved - {student.first_name}',
+        message=f'Congratulations! {student.first_name} has been admitted to {student.section}. Roll Number: {student.roll_number}',
+        from_email='nishansanadwayanad@gmail.com',
+        recipient_list=[application.email],
+        fail_silently=True,
+        )
         
         messages.success(request, f"Student {student.first_name} has been officially admitted to Class {student.section}!")
         return redirect('admission_list')

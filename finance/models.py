@@ -1,5 +1,6 @@
 from django.db import models
 from students.models import Student
+from staff.models import Staff
 from django.utils import timezone
 
 class FeeItem(models.Model):
@@ -7,7 +8,7 @@ class FeeItem(models.Model):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     
     def __str__(self):
-        return f"{self.name} (${self.amount})"
+        return f"{self.name} (AED{self.amount})"
 
 class Invoice(models.Model):
     STATUS_CHOICES = (
@@ -33,4 +34,33 @@ class Payment(models.Model):
     remarks = models.CharField(max_length=200, blank=True)
 
     def __str__(self):
-        return f"Payment of ${self.amount_paid} for Inv #{self.invoice.id}"
+        return f"Payment of AED{self.amount_paid} for Inv #{self.invoice.id}"
+    
+class SalarySlip(models.Model):
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('paid', 'Paid'),
+    ]
+
+    staff = models.ForeignKey(Staff, on_delete=models.CASCADE)
+    month = models.DateField(help_text="The 1st of the month this salary is for")
+    
+    basic_salary = models.DecimalField(max_digits=10, decimal_places=2)
+    allowances = models.DecimalField(max_digits=10, decimal_places=2, default=0, help_text="Bonuses, Transport, etc.")
+    deductions = models.DecimalField(max_digits=10, decimal_places=2, default=0, help_text="Tax, Loans, etc.")
+    
+    net_salary = models.DecimalField(max_digits=10, decimal_places=2, editable=False)
+    
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='pending')
+    payment_date = models.DateField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ['staff', 'month'] # Prevent paying someone twice in the same month
+
+    def save(self, *args, **kwargs):
+        # Auto-calculate Net Salary
+        self.net_salary = float(self.basic_salary) + float(self.allowances) - float(self.deductions)
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.staff.first_name} - {self.month.strftime('%B %Y')}"

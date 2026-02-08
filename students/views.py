@@ -13,6 +13,7 @@ from django.template.loader import get_template
 from xhtml2pdf import pisa
 from datetime import date
 from django.core.paginator import Paginator
+from openpyxl import Workbook
 
 @login_required
 def student_list(request):
@@ -144,4 +145,35 @@ def download_report_card(request, pk):
     
     if pisa_status.err:
        return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+@login_required
+def export_students_excel(request):
+    students = Student.objects.filter(is_active=True).select_related('section__grade')
+    
+    wb = Workbook()
+    ws = wb.active
+    ws.title = "Students"
+    
+    headers = ['Roll Number', 'First Name', 'Last Name', 'Grade', 'Section', 'Email', 'Phone', 'DOB']
+    ws.append(headers)
+    
+    for student in students:
+        ws.append([
+            student.roll_number,
+            student.first_name,
+            student.last_name,
+            student.section.grade.name if student.section else '',
+            student.section.name if student.section else '',
+            student.email,
+            student.parent_phone,
+            student.date_of_birth.strftime('%Y-%m-%d')
+        ])
+    
+    response = HttpResponse(
+        content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    )
+    response['Content-Disposition'] = 'attachment; filename=students_export.xlsx'
+    
+    wb.save(response)
     return response

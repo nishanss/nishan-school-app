@@ -218,7 +218,10 @@
     </ul>
   </div>
   {% endif %}
-
+  <a href="{% url 'export_students_excel' %}" class="btn btn-success">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2 -2v-2" /><polyline points="7 11 12 16 17 11" /><line x1="12" y1="4" x2="12" y2="16" /></svg>
+    Export Excel
+</a>
 
 </div>
 {% endblock %}

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block back_url %}
+<a href="{% url 'invoice_list' %}" class="btn btn-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg>
+</a>
+{% endblock %}
+
+{% block page_title %}
+<div class="row g-2 align-items-center">
+    <div class="col">
+        <h2 class="page-title">Payroll Management</h2>
+    </div>
+    <div class="col-auto ms-auto">
+        <form method="post" action="{% url 'generate_payroll' %}" class="d-flex gap-2">
+            {% csrf_token %}
+            <input type="month" name="month" class="form-control" value="{{ selected_month }}" required>
+            <button type="submit" class="btn btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M12 5v14m-7 -7h14" /></svg>
+                Generate Slips
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row row-cards">
+    <div class="col-md-6 col-lg-4">
+        <div class="card card-sm">
+            <div class="card-body">
+                <div class="row align-items-center">
+                    <div class="col-auto">
+                        <span class="bg-green text-white avatar">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M16.7 8a3 3 0 0 0 -2.7 -2h-4a3 3 0 0 0 0 6h4a3 3 0 0 1 0 6h-4a3 3 0 0 1 -2.7 -2" /><path d="M12 3v3m0 12v3" /></svg>
+                        </span>
+                    </div>
+                    <div class="col">
+                        <div class="font-weight-medium">Total Payout</div>
+                        <div class="text-muted">AED{{ total_payout|floatformat:2 }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Salary Slips: {{ selected_month }}</h3>
+            </div>
+            <div class="table-responsive">
+                <table class="table card-table table-vcenter text-nowrap datatable">
+                    <thead>
+                        <tr>
+                            <th>Staff Name</th>
+                            <th>Role</th>
+                            <th>Basic</th>
+                            <th>Net Salary</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for slip in salaries %}
+                        <tr>
+                            <td>
+                                <span class="font-weight-medium">{{ slip.staff.first_name }} {{ slip.staff.last_name }}</span>
+                                <div class="text-muted small">{{ slip.staff.staff_id }}</div>
+                            </td>
+                            <td>{{ slip.staff.role }}</td>
+                            <td>AED{{ slip.basic_salary }}</td>
+                            <td class="text-blue fw-bold">AED{{ slip.net_salary }}</td>
+                            <td>
+                                {% if slip.status == 'paid' %}
+                                    <span class="badge bg-success me-1"></span> Paid
+                                {% else %}
+                                    <span class="badge bg-warning me-1"></span> Pending
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if slip.status == 'pending' %}
+                                <a href="{% url 'mark_salary_paid' slip.id %}" class="btn btn-sm btn-outline-success">Mark Paid</a>
+                                {% else %}
+                                <span class="text-muted small">Paid on {{ slip.payment_date }}</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="6" class="text-center py-5">
+                                <p class="text-muted">No salary slips generated for this month yet.</p>
+                                <p class="small">Use the date picker above to generate them.</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

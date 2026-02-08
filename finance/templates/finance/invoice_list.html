@@ -82,7 +82,7 @@
                             <div class="text-muted small">Roll: {{ invoice.student.roll_number }}</div>
                         </td>
                         <td>{{ invoice.fee_item.name }}</td>
-                        <td>${{ invoice.amount }}</td>
+                        <td>AED{{ invoice.amount }}</td>
                         <td>{{ invoice.due_date }}</td>
                         <td>
                             {% if invoice.status == 'paid' %}

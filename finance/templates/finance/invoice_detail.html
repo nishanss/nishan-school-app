@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
+{% block back_url %}
+<a href="{% url 'invoice_list' %}" class="btn btn-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg>
+</a>
+{% endblock %}
+
 {% block content %}
 <div class="container-xl">
     <div class="page-header">
@@ -16,7 +22,7 @@
     <div class="card mt-3">
         <div class="card-body">
             <h3>Fee: {{ invoice.fee_item.name }}</h3>
-            <p class="display-5">${{ invoice.amount }}</p>
+            <p class="display-5">AED{{ invoice.amount }}</p>
             <p>Status: <strong>{{ invoice.get_status_display }}</strong></p>
             <p>Due Date: {{ invoice.due_date }}</p>
         </div>

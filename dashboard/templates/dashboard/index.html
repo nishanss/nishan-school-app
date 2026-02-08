@@ -74,7 +74,7 @@
                         </span>
                     </div>
                     <div class="col">
-                        <div class="font-weight-medium text-danger">${{ outstanding }}</div>
+                        <div class="font-weight-medium text-danger">AED{{ outstanding }}</div>
                         <div class="text-muted">Outstanding Fees</div>
                     </div>
                 </div>
@@ -109,6 +109,111 @@
                     <div class="text-muted mb-1">Server Uptime</div>
                     <div class="progress progress-sm"><div class="progress-bar bg-primary" style="width: 98%"></div></div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row row-cards mt-3">
+    
+    <div class="col-lg-6">
+        <div class="card" style="height: 28rem">
+            <div class="card-header">
+                <h3 class="card-title">Pending Admissions</h3>
+                <div class="card-actions">
+                    <a href="{% url 'admission_list' %}" class="btn btn-link text-muted">View All</a>
+                </div>
+            </div>
+            <div class="card-table table-responsive">
+                <table class="table table-vcenter">
+                    <thead>
+                        <tr>
+                            <th>Applicant</th>
+                            <th>Grade</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for app in recent_admissions %}
+                        <tr>
+                            <td>
+                                <div class="font-weight-medium">{{ app.first_name }} {{ app.last_name }}</div>
+                                <div class="text-muted small">{{ app.parent_phone }}</div>
+                            </td>
+                            <td>
+                                <span class="badge bg-blue-lt">{{ app.grade_applying_for.name }}</span>
+                            </td>
+                            <td class="text-muted">
+                                {{ app.date_applied|date:"M d" }}
+                            </td>
+                            <td>
+                                <a href="{% url 'approve_application' app.id %}" class="btn btn-sm btn-outline-primary">
+                                    Review
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center py-4 text-muted">
+                                No pending applications.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6">
+        <div class="card" style="height: 28rem">
+            <div class="card-header">
+                <h3 class="card-title">Top Performing Classes</h3>
+            </div>
+            <div class="card-body">
+                {% if top_performing_sections %}
+                    <div class="table-responsive">
+                        <table class="table table-vcenter card-table">
+                            <thead>
+                                <tr>
+                                    <th>Class Name</th>
+                                    <th>Students</th>
+                                    <th>Avg. GPA/Score</th>
+                                    <th>Trend</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for section in top_performing_sections %}
+                                <tr>
+                                    <td>
+                                        <div class="font-weight-medium"> {{ section.grade.name }} - {{ section.name }}</div>
+                                    </td>
+                                    <td class="text-muted">
+                                        {{ section.student_set.count }} students
+                                    </td>
+                                    <td>
+                                        <strong>{{ section.avg_score|default:"N/A"|floatformat:1 }}</strong>
+                                    </td>
+                                    <td>
+                                        <span class="text-success">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M3 17l6 -6l4 4l8 -8" /><path d="M14 7l7 0l0 7" /></svg>
+                                        </span>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="empty">
+                        <div class="empty-img"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M3 21h4l13 -13a1.5 1.5 0 0 0 -4 -4l-13 13v4" /><path d="M14.5 5.5l4 4" /></svg></div>
+                        <p class="empty-title">No Exam Data Yet</p>
+                        <p class="empty-subtitle text-muted">
+                            Once you add the <strong>Exams Module</strong> and enter grades, this chart will populate automatically.
+                        </p>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

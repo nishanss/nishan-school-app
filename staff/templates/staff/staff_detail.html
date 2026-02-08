@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
+{% block back_url %}
+<a href="{% url 'staff_list' %}" class="btn btn-icon">
+    <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"><path d="M5 12l14 0" /><path d="M5 12l6 6" /><path d="M5 12l6 -6" /></svg>
+</a>
+{% endblock %}
+
 {% block page_title %}
 <div class="page-pretitle">Staff Profile</div>
 <h2 class="page-title">{{ staff.first_name }} {{ staff.last_name }}</h2>
@@ -31,7 +37,7 @@
                     <div class="datagrid-item"><div class="datagrid-title">Joining Date</div><div class="datagrid-content">{{ staff.joining_date }}</div></div>
                     <div class="datagrid-item"><div class="datagrid-title">Qualification</div><div class="datagrid-content">{{ staff.qualification }}</div></div>
                     <div class="datagrid-item"><div class="datagrid-title">Experience</div><div class="datagrid-content">{{ staff.experience_years }} Years</div></div>
-                    <div class="datagrid-item"><div class="datagrid-title">Base Salary</div><div class="datagrid-content">${{ staff.base_salary }}</div></div>
+                    <div class="datagrid-item"><div class="datagrid-title">Base Salary</div><div class="datagrid-content">AED{{ staff.base_salary }}</div></div>
                 </div>
             </div>
         </div>

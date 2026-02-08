@@ -20,6 +20,7 @@ from django.conf.urls.static import static
 from django.urls import path, include
 from students.views import student_detail, student_list, student_create, student_update, student_delete
 from django.contrib.auth import views as auth_views
+from dashboard import views as dashboard_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,6 +28,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     # path('', student_list, name=''),
     path('', include('dashboard.urls')),
+    path('', dashboard_views.index, name='dashboard'),
     path('students/', include('students.urls')),
     path('students/add/', student_create, name='student_create'),
     path('students/<int:pk>/', student_detail, name='student_detail'),
@@ -42,6 +44,7 @@ urlpatterns = [
     path('timetable/', include('timetable.urls')),
     path('library/', include('library.urls')),
     path('admissions/', include('admissions.urls')),
+    path('dashboard/', include('dashboard.urls')),
 ]
 
 if settings.DEBUG:
